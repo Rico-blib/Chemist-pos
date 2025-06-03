@@ -24,6 +24,10 @@
                     <flux:navlist.item icon="shopping-cart" :href="route('sales')" :current="request()->routeIs('sales')" wire:navigate>
                         {{ __('Sales') }}
                     </flux:navlist.item>
+                    
+                    <flux:navlist.item icon="clock" :href="route('sales.history')" :current="request()->routeIs('sales.history')" wire:navigate>
+                        {{ __('Sales History') }}
+                    </flux:navlist.item>
 
                     <flux:navlist.item  icon="chart-bar" :href="route('reports')" :current="request()->routeIs('reports')" wire:navigate>
                         {{ __('Reports') }}
