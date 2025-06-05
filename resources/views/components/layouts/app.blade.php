@@ -1,4 +1,7 @@
 <x-layouts.app.sidebar :title="$title ?? null">
+    {{-- Flux Appearance Styles --}}
+    @fluxAppearance
+
     <flux:main>
         {{ $slot }}
     </flux:main>
@@ -7,7 +10,8 @@
     @livewireStyles
     @livewireScripts
 
-
+    {{-- Flux Scripts --}}
+    @fluxScripts
 
     {{-- Optional: Push any additional scripts --}}
     @stack('scripts')

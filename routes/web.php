@@ -6,12 +6,11 @@ use App\Livewire\Medicines\Index;
 use App\Livewire\Sales\Pos;
 use App\Livewire\Sales\History;
 use App\Livewire\Reports\Index as ReportsIndex;
+use App\Livewire\Dashboard; // ⬅️ Add this line
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\ExportController;
 
-Route::get('/', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/', Dashboard::class)->middleware(['auth'])->name('dashboard'); // ⬅️ Updated line
 
 // ✅ Pages
 Route::get('/medicines', Index::class)->middleware('auth')->name('medicines');
