@@ -29,7 +29,7 @@
                         {{ __('Sales History') }}
                     </flux:navlist.item>
 
-                    <flux:navlist.item  icon="chart-bar" :href="route('reports')" :current="request()->routeIs('reports')" wire:navigate>
+                    <flux:navlist.item  icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.index')" wire:navigate>
                         {{ __('Reports') }}
                     </flux:navlist.item>
                 </flux:navlist.group>

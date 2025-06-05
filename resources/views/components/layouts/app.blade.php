@@ -7,6 +7,8 @@
     @livewireStyles
     @livewireScripts
 
+
+
     {{-- Optional: Push any additional scripts --}}
     @stack('scripts')
 

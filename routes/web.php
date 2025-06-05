@@ -5,36 +5,33 @@ use Livewire\Volt\Volt;
 use App\Livewire\Medicines\Index;
 use App\Livewire\Sales\Pos;
 use App\Livewire\Sales\History;
+use App\Livewire\Reports\Index as ReportsIndex;
 use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\ExportController; // ✅ Add this line
+use App\Http\Controllers\ExportController;
 
 Route::get('/', function () {
-    return view('dashboard'); // Dashboard view
+    return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+// ✅ Pages
 Route::get('/medicines', Index::class)->middleware('auth')->name('medicines');
 Route::get('/sales', Pos::class)->middleware('auth')->name('sales');
 Route::get('/sales/history', History::class)->middleware('auth')->name('sales.history');
+Route::get('/reports', ReportsIndex::class)->middleware('auth')->name('reports.index');
 
-// ✅ Receipt routes
+// ✅ Receipt
 Route::get('/sales/{sale}/receipt/download', [ReceiptController::class, 'download'])
-    ->middleware('auth')
-    ->name('sales.receipt.download');
+    ->middleware('auth')->name('sales.receipt.download');
 
 Route::get('/sales/{sale}/receipt/print', [ReceiptController::class, 'print'])
-    ->middleware('auth')
-    ->name('sales.receipt.print');
+    ->middleware('auth')->name('sales.receipt.print');
 
-// ✅ Export routes
+// ✅ Exports
 Route::get('/sales/export/pdf', [ExportController::class, 'exportPdf'])
-    ->middleware('auth')
-    ->name('sales.export.pdf');
+    ->middleware('auth')->name('sales.export.pdf');
 
 Route::get('/sales/export/excel', [ExportController::class, 'exportExcel'])
-    ->middleware('auth')
-    ->name('sales.export.excel');
-
-Route::view('/reports', 'reports')->middleware('auth')->name('reports');
+    ->middleware('auth')->name('sales.export.excel');
 
 // ✅ Volt settings
 Route::middleware(['auth'])->group(function () {
