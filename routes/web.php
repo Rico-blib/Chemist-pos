@@ -6,33 +6,59 @@ use App\Livewire\Medicines\Index;
 use App\Livewire\Sales\Pos;
 use App\Livewire\Sales\History;
 use App\Livewire\Reports\Index as ReportsIndex;
-use App\Livewire\Dashboard; // ⬅️ Add this line
+use App\Livewire\Dashboard;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\ExportController;
+use App\Http\Middleware\RoleMiddleware;
 
-Route::get('/', Dashboard::class)->middleware(['auth'])->name('dashboard'); // ⬅️ Updated line
+Route::get('/home', function () {
+    return redirect()->route('dashboard');
+})->middleware('auth')->name('home');
 
-// ✅ Pages
-Route::get('/medicines', Index::class)->middleware('auth')->name('medicines');
-Route::get('/sales', Pos::class)->middleware('auth')->name('sales');
-Route::get('/sales/history', History::class)->middleware('auth')->name('sales.history');
-Route::get('/reports', ReportsIndex::class)->middleware('auth')->name('reports.index');
+// 🟢 All roles can access dashboard
+Route::get('/', Dashboard::class)
+    ->middleware(['auth'])
+    ->name('dashboard');
 
-// ✅ Receipt
-Route::get('/sales/{sale}/receipt/download', [ReceiptController::class, 'download'])
-    ->middleware('auth')->name('sales.receipt.download');
+// ✅ Admin & Pharmacist: Medicines
+Route::get('/medicines', Index::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin,pharmacist'])
+    ->name('medicines');
 
-Route::get('/sales/{sale}/receipt/print', [ReceiptController::class, 'print'])
-    ->middleware('auth')->name('sales.receipt.print');
+// ✅ Admin & Cashier: POS
+Route::get('/sales', Pos::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin,cashier'])
+    ->name('sales');
 
-// ✅ Exports
-Route::get('/sales/export/pdf', [ExportController::class, 'exportPdf'])
-    ->middleware('auth')->name('sales.export.pdf');
+// ✅ Admin only: Sales History
+Route::get('/sales/history', History::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin'])
+    ->name('sales.history');
 
-Route::get('/sales/export/excel', [ExportController::class, 'exportExcel'])
-    ->middleware('auth')->name('sales.export.excel');
+// ✅ Admin only: Reports
+Route::get('/reports', ReportsIndex::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin'])
+    ->name('reports.index');
 
-// ✅ Volt settings
+// ✅ Admin & Cashier: Receipt actions
+Route::middleware(['auth', RoleMiddleware::class . ':admin,cashier'])->group(function () {
+    Route::get('/sales/{sale}/receipt/download', [ReceiptController::class, 'download'])
+        ->name('sales.receipt.download');
+
+    Route::get('/sales/{sale}/receipt/print', [ReceiptController::class, 'print'])
+        ->name('sales.receipt.print');
+});
+
+// ✅ Admin only: Export actions
+Route::middleware(['auth', RoleMiddleware::class . ':admin'])->group(function () {
+    Route::get('/sales/export/pdf', [ExportController::class, 'exportPdf'])
+        ->name('sales.export.pdf');
+
+    Route::get('/sales/export/excel', [ExportController::class, 'exportExcel'])
+        ->name('sales.export.excel');
+});
+
+// ✅ Volt settings (all roles)
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
