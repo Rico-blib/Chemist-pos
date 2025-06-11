@@ -10,6 +10,8 @@ use App\Livewire\Dashboard;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\ExportController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Livewire\Users\Index as UsersIndex;
+
 
 Route::get('/home', function () {
     return redirect()->route('dashboard');
@@ -39,6 +41,11 @@ Route::get('/sales/history', History::class)
 Route::get('/reports', ReportsIndex::class)
     ->middleware(['auth', RoleMiddleware::class . ':admin'])
     ->name('reports.index');
+    
+// ✅ Admin only: User Management
+Route::get('/users', UsersIndex::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin'])
+    ->name('users.index');
 
 // ✅ Admin & Cashier: Receipt actions
 Route::middleware(['auth', RoleMiddleware::class . ':admin,cashier'])->group(function () {
@@ -57,6 +64,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':admin'])->group(function ()
     Route::get('/sales/export/excel', [ExportController::class, 'exportExcel'])
         ->name('sales.export.excel');
 });
+
+
 
 // ✅ Volt settings (all roles)
 Route::middleware(['auth'])->group(function () {
